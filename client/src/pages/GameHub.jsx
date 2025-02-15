@@ -2,6 +2,7 @@ import { RiUser3Fill } from "react-icons/ri";
 import { IoIosCreate } from "react-icons/io";
 import { TbSwords } from "react-icons/tb";
 
+{/* Colored Game Hub */}
 export default function GameHub() {
     return (
         <div className={`min-h-screen w-screen flex flex-row gap-5 py-5 bg-purple-300`}>

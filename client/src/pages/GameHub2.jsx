@@ -2,6 +2,7 @@ import { RiUser3Fill } from "react-icons/ri";
 import { IoIosCreate } from "react-icons/io";
 import { TbSwords } from "react-icons/tb";
 
+{/* Dark Mode Game Hub */}
 export default function GameHub2() {
     return (
         <div className={`min-h-screen w-screen bg-neutral-900 flex`}>
