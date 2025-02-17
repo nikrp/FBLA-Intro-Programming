@@ -4,6 +4,7 @@ import Register from "./pages/Register"
 import Login from "./pages/Login"
 import GameHub from "./pages/GameHub"
 import GameHub2 from "./pages/GameHub2"
+import Solo from "./pages/Solo"
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/game-hub" element={<GameHub />} />
         <Route path="/game-hub2" element={<GameHub2 />} />
+        <Route path="/adventure" element={<Solo />} />
       </Routes>
     </div>
   )

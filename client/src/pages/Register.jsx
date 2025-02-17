@@ -19,6 +19,8 @@ export default function Register() {
                 },
             },
         });
+
+        navigate("/login", { replace: true });
     }
 
     return (

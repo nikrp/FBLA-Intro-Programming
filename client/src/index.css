@@ -1,1 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 @import "tailwindcss";
+
+@theme {
+    --font-retro: "Press Start 2P", cursive;
+}
+
+@layer utilities {
+  /* For WebKit browsers (Chrome, Safari) */
+  ::-webkit-scrollbar {
+    width: 8px; /* Thinner scrollbar */
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: theme('colors.neutral.800'); /* Background of scrollbar track */
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: theme('colors.neutral.600'); /* Scrollbar color */
+    border-radius: 4px; /* Rounded scrollbar */
+  }
+
+  /* Remove scrollbar arrows in WebKit browsers */
+  ::-webkit-scrollbar-button {
+    display: none;
+  }
+
+  /* For Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.neutral.600') theme('colors.neutral.800');
+    scroll-padding: 5px;
+  }
+}
