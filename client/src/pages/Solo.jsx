@@ -6,6 +6,7 @@ import Timer from './Timer';
 import { IoExitOutline } from "react-icons/io5";
 import { HiPlay, HiPause } from "react-icons/hi2";
 import { useLocation, useNavigate } from "react-router-dom";
+import data from "./images";
 
 export default function Solo({ supabase }) {
     const [storyline, setStoryline] = useState([]);
@@ -43,7 +44,7 @@ export default function Solo({ supabase }) {
 
     useEffect(() => {
         async function collectStory() {
-            const { data, error } = await supabase.from("Story").select();
+            const { data, error } = await supabase.from("JungleStory").select();
             
             if (error) {
                 console.error("Error collecting story for database:", error.message);
@@ -83,6 +84,9 @@ export default function Solo({ supabase }) {
         
         setOptionOneText(next);
         setOptionTwoText(next);
+
+        console.log(next);
+        console.log(data[next.id]);
     }
 
     async function addTime() {
@@ -109,9 +113,6 @@ export default function Solo({ supabase }) {
                 <div className={`overflow-y-auto bg-neutral-800 h-[75.5%] w-full border-b-2 border-b-neutral-600 py-4 flex flex-col items-center gap-10`}>
                 
                     {storyline.map((section, index) => {
-
-                        console.log(section);
-
                         return !section.type ? (
                             <MessageComponent type="prompt">
                                 {section.dialouge.map((message, index) => {
@@ -146,19 +147,20 @@ export default function Solo({ supabase }) {
             <div className={`w-1/2 bg-neutral-800 ${alive ? `relative` : !success ? `bg-black` : ``} transition-all duration-500 ease-in`}>
                 {alive ? (
                     <div>
-                        <img className={`w-full h-screen`} src={image} alt="helicopter" />
+                        <img className={`w-full h-screen transition-all duration-200 ease-in-out`} src={data[optionOneText.id] ? data[optionOneText.id].src : ``} alt={data[optionOneText.id]?.alt} />
                     </div>
                 ) : success ? (
-                    <img className={`w-full h-full`} src={`Something`} alt="Successful Ending - Boys Playing in Backyard" />
+                    <img className={`w-full h-full`} src={data[24].src} alt={data[24].alt} />
                 ) : (
-                    <div className={`w-full h-full flex justify-center items-center flex-col`}>
-                        <motion.p initial={{ y: 0, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ ease: "easeIn", duration: 1, delay: 0.25 }} className={`font-retro text-5xl font-extrabold text-white`}>GAME OVER</motion.p>
-                        {/* <div className={`relative`}><ReactPlayer style={{ pointerEvents: "none" }} config={{ youtube: { playerVars: { showinfo: 1 } } }} url={video} playing={true} onEnded={() => alert("Video Has Ended, call a method.")} width={600} height={350}/></div> */}
+                    <div className={`w-full h-full flex justify-center items-center flex-col relative`}>
+                        <img className={`w-full h-screen transition-all duration-200 ease-in-out z-10`} src={data[optionOneText.id] ? data[optionOneText.id].src : ``} alt={data[optionOneText.id]?.alt} />
+                        <motion.div initial={{ y: 0, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ ease: "easeIn", duration: 1, delay: 0.15 }} className={`absolute z-20 p-5 rounded-lg bg-base-300 drop-shadow-sm flex flex-col justify-center`}>
+                            <motion.p className={`mb-3 font-retro z-20 text-5xl font-extrabold px-4 py-2.5 pt-4 rounded-lg`}>GAME OVER</motion.p>
+                            <button onClick={() => navigate('/', { replace: true })} className={`btn btn-error btn-lg`}>Return to Home</button>
+                        </motion.div>
                     </div>
                 )}
             </div>
         </div>
     );
 }
-
-// https://www.youtube.com/watch?v=BZP1rYjoBgI - 30 Second Clip for Testing Purposes

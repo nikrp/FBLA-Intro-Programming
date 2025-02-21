@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Timer from './Timer';
 import { IoHelpOutline } from "react-icons/io5";
 import howToPlayStep1 from './howToPlayStep1.png';
+import howToPlayStep2 from './howToPlayStep2.png';
 
 export default function LandingPage({ supabase }) {
     const [username, setUsername] = useState("");
@@ -66,7 +67,7 @@ export default function LandingPage({ supabase }) {
                     <input value={username} onChange={(e) => setUsername(e.target.value)} className={`w-full rounded-lg px-4 text-2xl py-2 focus:outline-none focus:ring-2 placeholder:text-gray-400 text-black focus:ring-offset-2 focus:ring-offset-transparent focus:ring-neutral-200 bg-white`} placeholder={`Username`} type={`text`} />
                     {usernameError && <p className={`text-red-500 text-xl bg-white py-1.5 px-2.5 rounded-lg drop-shadow-sm`}>Username already taken, please try another one!</p>}
                     <button onClick={handlePlayButton} className={`text-3xl rounded-lg bg-emerald-400 w-full px-4 py-2 cursor-pointer hover:bg-emerald-300 transition-all duraiton-200 ease-in-out`}>Play</button>
-                    <button onClick={() => document.getElementById('how_to_play_modal').showModal()} data-tip={`How to Play`} className={`animate-bounce0 w-fit tooltip tooltip-right mt-2 rounded-full px-3 py-3 bg-emerald-400 cursor-pointer hover:bg-emerald-500 transition-all duration-200 ease-in-out`}>
+                    <button onClick={() => document.getElementById('how_to_play_modal').showModal()} data-tip={`How to Play`} className={`animate-bounce w-fit tooltip tooltip-right mt-2 rounded-full px-3 py-3 bg-emerald-400 cursor-pointer hover:bg-emerald-500 transition-all duration-200 ease-in-out`}>
                         <IoHelpOutline size={20} color={`white`} />
                     </button>
                 </div>
@@ -87,13 +88,17 @@ export default function LandingPage({ supabase }) {
             </div>
 
             <dialog id={`how_to_play_modal`} className={`modal`}>
-                <div className={`modal-box`}>
+                <div className={`modal-box w-6/12 max-w-5xl`}>
                     <form method="dialog">
                         <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                     </form>
-                    <h3 className="font-bold text-lg">Hello, welcome to The Grand Adventure, here's how to play!</h3>
+                    <h3 className="font-bold text-lg mb-3">Hello, welcome to The Grand Adventure, here's how to play!</h3>
                     <p className={`text-xl font-semibold`}>1. Read the Dialouge on the Left Side of the Screen</p>
-                    <img src={howToPlayStep1} alt='step-1' className={`my-3`} />
+                    <img src={howToPlayStep1} alt='step-1' className={`my-3 w-96 h-auto`} />
+                    <p className={`text-xl font-semibold`}>2. Select What Option you Think has the Best Outcome</p>
+                    <img src={howToPlayStep2} alt='step-2' className={`my-3 w-96 h-auto`} />
+                    <p className={`text-xl font-semibold`}>3. Try to Reach the End in the Shortest Possible Amount of Time!</p>
+                    <h3 className="font-bold text-lg mt-3">Good Luck Adventurer!</h3>
                 </div>
             </dialog>
         </div>
