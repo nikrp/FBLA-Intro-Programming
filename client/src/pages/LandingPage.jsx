@@ -5,6 +5,7 @@ import Timer from './Timer';
 import { IoHelpOutline } from "react-icons/io5";
 import howToPlayStep1 from './howToPlayStep1.png';
 import howToPlayStep2 from './howToPlayStep2.png';
+import Cookies from 'js-cookie';
 
 export default function LandingPage({ supabase }) {
     const [username, setUsername] = useState("");
@@ -62,8 +63,33 @@ export default function LandingPage({ supabase }) {
             </div> */}
 
             {/* First Look */}
-            <div className={`grid grid-cols-12 gap-5 w-3/6`}>
-                <div className={`col-span-6 rounded-lg drop-shadow-sm flex flex-col gap-3`}>
+            <div className={`grid grid-cols-12 gap-5 w-screen p-10`}>
+                <div className={`col-span-4 rounded-lg drop-shadow-sm flex flex-col gap-3`}>
+                    <div className={`rounded-lg p-7 bg-base-300`}>
+                        <p className={`text-2xl font-semibold`}>Best Statistics</p>
+                        <div className={`w-full h-0.5 my-2.5 bg-neutral-500`}></div>
+                        {Cookies.get("username") ? (
+                            <>
+                                <p style={{ color: Cookies.get('color') }} className={`w-full text-3xl font-semibold mb-5 text-center`}>{Cookies.get('username')}</p>
+                                <p className={`flex items-center justify-between mb-3`}>
+                                    <p className={`text-xl font-normal`}>Time</p>
+                                    <p className={`text-xl font-medium text-accent`}><Timer time={parseInt(Cookies.get('seconds'))} /></p>
+                                </p>
+                                <p className={`flex items-center justify-between mb-3`}>
+                                    <p className={`text-xl font-normal`}>Deaths</p>
+                                    <p className={`text-xl font-medium text-warning`}>{Cookies.get('deaths')}</p>
+                                </p>
+                                <p className={`flex items-center justify-between`}>
+                                    <p className={`text-xl font-normal`}>Options Selected</p>
+                                    <p className={`text-xl font-medium text-error`}>{Cookies.get('options')}</p>
+                                </p>
+                            </>
+                        ) : (
+                            <p className={`text-lg text-secondary`}>Play an adventure to see it come here!</p>
+                        )}
+                    </div>
+                </div>
+                <div className={`col-span-4 rounded-lg drop-shadow-sm flex flex-col gap-3`}>
                     <input value={username} onChange={(e) => setUsername(e.target.value)} className={`w-full rounded-lg px-4 text-2xl py-2 focus:outline-none focus:ring-2 placeholder:text-gray-400 text-black focus:ring-offset-2 focus:ring-offset-transparent focus:ring-neutral-200 bg-white`} placeholder={`Username`} type={`text`} />
                     {usernameError && <p className={`text-red-500 text-xl bg-white py-1.5 px-2.5 rounded-lg drop-shadow-sm`}>Username already taken, please try another one!</p>}
                     <button onClick={handlePlayButton} className={`text-3xl rounded-lg bg-emerald-400 w-full px-4 py-2 cursor-pointer hover:bg-emerald-300 transition-all duraiton-200 ease-in-out`}>Play</button>
@@ -71,15 +97,15 @@ export default function LandingPage({ supabase }) {
                         <IoHelpOutline size={20} color={`white`} />
                     </button>
                 </div>
-                <div className='col-span-6 rounded-lg bg-white drop-shadow-sm p-5'>
-                    <p className={`text-2xl font-semibold text-black mb-5`}>Global Leaderboard</p>
+                <div className='col-span-4 rounded-lg bg-base-300 drop-shadow-sm p-5'>
+                    <p className={`text-2xl font-semibold mb-5`}>Global Leaderboard</p>
 
                     <div className={`flex flex-col gap-4`}>
                         {leaderboard.map((value, index) => {
                             return (
                                 <div key={index} className={`flex items-center justify-between`}>
-                                    <p className={`text-xl text-black font-semibold`}>{index + 1}. {value.username}</p>
-                                    <p className={`text-amber-500 text-xl font-bold`}><Timer time={value.seconds} /></p>
+                                    <p style={{ color: value.color }} className={`text-xl font-semibold`}>{index + 1}. {value.username}</p>
+                                    <p className={`text-accent text-xl font-bold`}><Timer time={value.seconds} /></p>
                                 </div>
                             );
                         })}
