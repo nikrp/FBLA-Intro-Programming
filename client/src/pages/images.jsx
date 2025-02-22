@@ -46,7 +46,7 @@ const data = {
     12: { src: tunnelCrawling, alt: "Crouch and Hide" },
     13: { src: hiddenCave, alt: "Return to Cave" },
     14: { src: jungle, alt: "Keep Going Through Jungle" },
-    15: { src: snakeLunge, alt: "Snake Lunges" }, // Not Done, Snake Lunging
+    15: { src: snakeLunge, alt: "Snake Lunges" },
     16: { src: denseJungle, alt: "Continue Moving" },
     17: { src: stayStill, alt: "Glowing Tunnel to Massive Lake" },
     18: { src: useRaft, alt: "Paddle on Raft" },
