@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import jungleBg from './landing_bg.jpg';
 import { useNavigate } from 'react-router-dom';
-import Timer from './Timer';
 import { IoHelpOutline } from "react-icons/io5";
-import howToPlayStep1 from './howToPlayStep1.png';
-import howToPlayStep2 from './howToPlayStep2.png';
+import jungleBg from './assets/other/landing_bg.jpg';
+import Timer from './components/Timer';
+import howToPlayStep1 from './assets/other/howToPlayStep1.png';
+import howToPlayStep2 from './assets/other/howToPlayStep2.png';
 import Cookies from 'js-cookie';
 
 export default function LandingPage({ supabase }) {

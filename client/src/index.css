@@ -1,11 +1,18 @@
+/* Import Retro Font and TailwindCSS Utility Classes */
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 @import "tailwindcss";
-@plugin "daisyui";
 
+/* Add DaisyUI Plugin for Easier Component Styling in TailwindCSS */
+@plugin "daisyui" {
+  themes: dark --default, dark --prefersdark, dark --preferslight;
+}
+
+/* Add a New Font to my TailwindCSS Classes */
 @theme {
     --font-retro: "Press Start 2P", cursive;
 }
 
+/* Scrollbar Design */
 @layer utilities {
   /* For WebKit browsers (Chrome, Safari) */
   ::-webkit-scrollbar {
