@@ -228,6 +228,9 @@ export default function Solo({ supabase }) {
             if (dup) {
                 e.target.setCustomValidity("Username already taken, please try another one!");
                 setUsernameDup(true);
+            } else if (e.target.value.trim().length === 0) {
+                e.target.setCustomValidity("Username can't be blank, put something!");
+                setUsernameDup(true);
             } else {
                 e.target.setCustomValidity("");
                 setUsernameDup(false);
@@ -325,7 +328,7 @@ export default function Solo({ supabase }) {
                                     </div>
                                     <div>
                                         <input onInput={handleValidation} className={`input validator read-only:border-neutral-700 focus:outline-none focus:border-neutral-500 input-lg w-full font-semibold text-xl`} style={{ color: colorChoice }} value={username} onChange={(e) => setUsername(e.target.value)} readOnly={!editUsername} />
-                                        <div className="validator-hint">Username Taken</div>
+                                        <div className="validator-hint">Username has been taken already. Username can't be blank.</div>
                                     </div>
                                     <button onClick={() => setEditUsername(!editUsername)} data-tip={`Press Again to Stop Edit`} className={`${editUsername && `tooltip tooltip-top tooltip-open`} btn btn-square border-neutral-600 relative flex justify-center items-center`}><TbEdit size={20} color="white" className={`${editUsername && `absolute`}`} /></button>
                                 </div>

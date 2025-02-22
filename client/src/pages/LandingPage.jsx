@@ -11,6 +11,7 @@ import Cookies from 'js-cookie';
 export default function LandingPage({ supabase }) {
     const [username, setUsername] = useState("");
     const [usernameError, setUsernameError] = useState(false);
+    const [usernameErrorMessage, setUsernameErrorMessage] = useState("");
     const [times, setTimes] = useState([]);
     const [leaderboard, setLeaderboard] = useState([]);
 
@@ -20,9 +21,14 @@ export default function LandingPage({ supabase }) {
         const userResult = times.find((value) => value.username.trim() === username.trim());
 
         if (userResult) {
-            console.error("Username already exists, please select another!");
             setUsernameError(true);
+            setUsernameErrorMessage("Username already exists, please select another!");
+        } else if (username.trim().length === 0) {
+            setUsernameError(true);
+            setUsernameErrorMessage("Username can't be blank, put something!");
         } else {
+            setUsernameError(false);
+            setUsernameErrorMessage("");
             navigate("/adventure", { replace: true, state: { username: username } });
         }
     }
@@ -93,10 +99,11 @@ export default function LandingPage({ supabase }) {
                 <div className={`col-span-4 rounded-lg drop-shadow-sm flex flex-col gap-3`}>
                     <img src={appLogo} className={`w-4/6 mx-auto h-auto drop-shadow-2xl`} alt='Logo' />
                     <input value={username} onChange={(e) => setUsername(e.target.value)} className={`w-full rounded-lg px-4 text-2xl py-2 focus:outline-none focus:ring-2 placeholder:text-gray-400 text-black focus:ring-offset-2 focus:ring-offset-transparent focus:ring-neutral-200 bg-white`} placeholder={`Username`} type={`text`} />
-                    {usernameError && <p className={`text-red-500 text-xl bg-white py-1.5 px-2.5 rounded-lg drop-shadow-sm`}>Username already taken, please try another one!</p>}
+                    {usernameError && <p className={`text-red-500 text-xl bg-white py-1.5 px-2.5 rounded-lg drop-shadow-sm`}>{usernameErrorMessage}</p>}
                     <button onClick={handlePlayButton} className={`text-3xl rounded-lg bg-emerald-400 w-full px-4 py-2 cursor-pointer hover:bg-emerald-300 transition-all duraiton-200 ease-in-out`}>Play</button>
-                    <button onClick={() => document.getElementById('how_to_play_modal').showModal()} data-tip={`How to Play`} className={`animate-bounce w-fit tooltip tooltip-right mt-2 rounded-full px-3 py-3 bg-emerald-400 cursor-pointer hover:bg-emerald-500 transition-all duration-200 ease-in-out`}>
-                        <IoHelpOutline size={20} color={`white`} />
+                    <button onClick={() => document.getElementById('how_to_play_modal').showModal()} className={`animate-bounce w-fit mt-2 px-3 py-3 btn btn-accent btn-lg btn-square cursor-pointer transition-all duration-200 ease-in-out flex items-center gap-1.5`}>
+                        <IoHelpOutline size={20} />
+                        <p>How to Play</p>
                     </button>
                 </div>
                 <div className='col-span-4 rounded-lg bg-base-300 drop-shadow-sm p-5'>
@@ -106,7 +113,7 @@ export default function LandingPage({ supabase }) {
                         {leaderboard.map((value, index) => {
                             return (
                                 <div key={index} className={`flex items-center justify-between`}>
-                                    <p style={{ color: value.color }} className={`text-xl font-semibold`}>{index + 1}. {value.username}</p>
+                                    <p style={{ color: value.color }} className={`text-xl font-semibold line-clamp-1`}>{index + 1}. {value.username}</p>
                                     <p className={`text-accent text-xl font-bold`}><Timer time={value.seconds} /></p>
                                 </div>
                             );
