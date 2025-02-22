@@ -5,6 +5,7 @@ import jungleBg from './assets/other/landing_bg.jpg';
 import Timer from './components/Timer';
 import howToPlayStep1 from './assets/other/howToPlayStep1.png';
 import howToPlayStep2 from './assets/other/howToPlayStep2.png';
+import appLogo from './assets/other/app-logo.png';
 import Cookies from 'js-cookie';
 
 export default function LandingPage({ supabase }) {
@@ -90,6 +91,7 @@ export default function LandingPage({ supabase }) {
                     </div>
                 </div>
                 <div className={`col-span-4 rounded-lg drop-shadow-sm flex flex-col gap-3`}>
+                    <img src={appLogo} className={`w-4/6 mx-auto h-auto`} alt='Logo' />
                     <input value={username} onChange={(e) => setUsername(e.target.value)} className={`w-full rounded-lg px-4 text-2xl py-2 focus:outline-none focus:ring-2 placeholder:text-gray-400 text-black focus:ring-offset-2 focus:ring-offset-transparent focus:ring-neutral-200 bg-white`} placeholder={`Username`} type={`text`} />
                     {usernameError && <p className={`text-red-500 text-xl bg-white py-1.5 px-2.5 rounded-lg drop-shadow-sm`}>Username already taken, please try another one!</p>}
                     <button onClick={handlePlayButton} className={`text-3xl rounded-lg bg-emerald-400 w-full px-4 py-2 cursor-pointer hover:bg-emerald-300 transition-all duraiton-200 ease-in-out`}>Play</button>
