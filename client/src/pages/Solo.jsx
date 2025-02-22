@@ -136,14 +136,6 @@ export default function Solo({ supabase }) {
         const newStoryLine = [...storyline, selected, next];
         setStoryline(newStoryLine);
         setOptionsSelected((optionsSelected) => optionsSelected + 1);
-
-        // Update the Checkpoint if halfwayIndex is met
-        console.log(newStoryLine.length, halfwayIndex);
-        if (!checkpointSet && newStoryLine.length >= halfwayIndex) {
-            setLastCheckpoint(next);
-            setCheckpointSet(true);
-            handleCheckpointSet();
-        }
         
         // Game Over or Win Occured
         if (!next.option_1 && !next.option_2) {
@@ -171,6 +163,13 @@ export default function Solo({ supabase }) {
 
                     respawnTimerRef.current -= 10;
                 }, 10);
+            }
+        } else {
+            // Update the Checkpoint if halfwayIndex is met
+            if (!checkpointSet && newStoryLine.length >= halfwayIndex) {
+                setLastCheckpoint(next);
+                setCheckpointSet(true);
+                handleCheckpointSet();
             }
         }
         
