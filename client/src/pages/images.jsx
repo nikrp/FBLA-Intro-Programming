@@ -29,6 +29,7 @@ import fightBack from './assets/jungle-path/fightBack.png';
 import dodge from './assets/jungle-path/dodgeAndRun.png';
 import pushForward from './assets/jungle-path/pushForward.png';
 import grabSomething from './assets/jungle-path/grabOntoSomething.png';
+import jaguar from './assets/jungle-path/Jaguar.png';
 
 const data = {
     1: { src: introScene, alt: "Intro Scene" },
@@ -55,7 +56,7 @@ const data = {
     22: { src: glowingRunes, alt: "Glowing Runes" },
     23: { src: glowingRunes, alt: "Stone Door" },
     24: { src: ending, alt: "Boys Playing with Toys" },
-    25: { src: denseJungle, alt: "Dense Jungle" },
+    25: { src: jaguar, alt: "Jaguar" },
     26: { src: climbTree, alt: "Climb Tree" },
     27: { src: standGround, alt: "Stand Ground" },
     28: { src: fightBack, alt: "Fight Back" },
