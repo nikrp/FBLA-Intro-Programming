@@ -8,6 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import data from "./images";
 import { TbEdit } from "react-icons/tb";
 import Cookies from 'js-cookie';
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function Solo({ supabase }) {
     // State Variables
@@ -40,6 +41,11 @@ export default function Solo({ supabase }) {
     const [editUsername, setEditUsername] = useState(false);
     const [usernameDup, setUsernameDup] = useState(false);
     const colorRef = useRef(null);
+
+    // Checkpoint Variables
+    const [lastCheckpoint, setLastCheckpoint] = useState({});
+    const [halfwayIndex, setHalfwayIndex] = useState(0);
+    const [checkpointSet, setCheckpointSet] = useState(false);
 
     // Scroll down automatically everytime more content is added the the storyline.
     useEffect(() => {
@@ -84,6 +90,10 @@ export default function Solo({ supabase }) {
             setOptionOneText(data.sort((a, b) => a.id - b.id)[0]);
             setOptionTwoText(data.sort((a, b) => a.id - b.id)[0]);
 
+            // Set Checkpoint to the Start for Now
+            setLastCheckpoint(data.sort((a, b) => a.id - b.id)[0]);
+            setHalfwayIndex(Math.floor(data.sort((a, b) => a.id - b.id).length / 4));
+
             // Begin the Stopwatch
             setIsPaused(false);
             setIsActive(true);
@@ -123,8 +133,17 @@ export default function Solo({ supabase }) {
     // Whenever a choice is selected, this method is called.
     function selectChoice(selected) {
         const next = story.find((val) => val.id === selected.id);
-        setStoryline([...storyline, selected, next]);
+        const newStoryLine = [...storyline, selected, next];
+        setStoryline(newStoryLine);
         setOptionsSelected((optionsSelected) => optionsSelected + 1);
+
+        // Update the Checkpoint if halfwayIndex is met
+        console.log(newStoryLine.length, halfwayIndex);
+        if (!checkpointSet && newStoryLine.length >= halfwayIndex) {
+            setLastCheckpoint(next);
+            setCheckpointSet(true);
+            handleCheckpointSet();
+        }
         
         // Game Over or Win Occured
         if (!next.option_1 && !next.option_2) {
@@ -138,9 +157,12 @@ export default function Solo({ supabase }) {
                 const intervalId = setInterval(() => {
                     // Respawn Timer is 0, reset player variables but keep game timer counting.
                     if (respawnTimerRef.current <= 0) {
-                        setStoryline([story[0]]);
-                        setOptionOneText(story[0]);
-                        setOptionTwoText(story[0]);
+                        if (checkpointSet) {
+                            handleCheckpointRespawn();
+                        }
+                        setStoryline([lastCheckpoint]);
+                        setOptionOneText(lastCheckpoint);
+                        setOptionTwoText(lastCheckpoint);
                         setAlive(true);
                         setDeaths((deaths) => deaths + 1);
                         respawnTimerRef.current = 5000;
@@ -211,6 +233,16 @@ export default function Solo({ supabase }) {
                 setUsernameDup(false);
             }
         }
+    }
+
+    // Call a toast for setting a checkpoint.
+    function handleCheckpointSet() {
+        toast("Checkpoint Set!");
+    }
+
+    // Call a toast for respawing at a checkpoint.
+    function handleCheckpointRespawn() {
+        toast("Respawned at Checkpoint!");
     }
     
     return (
@@ -328,6 +360,7 @@ export default function Solo({ supabase }) {
                     </div>
                 )}
             </div>
+            <ToastContainer theme={`dark`} />
         </div>
     );
 }
