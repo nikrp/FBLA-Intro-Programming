@@ -29,6 +29,7 @@ export default function Solo({ supabase }) {
     const bottomRef = useRef(null);
 
     // Respawn Countdown
+    const [showRespawnButton, setShowRespawnButton] = useState(false);
     const respawnTimer = 5000;
     const respawnTimerRef = useRef(respawnTimer);
 
@@ -147,17 +148,9 @@ export default function Solo({ supabase }) {
                 setSuccess(true);
             } else { // Game Over
                 const intervalId = setInterval(() => {
-                    // Respawn Timer is 0, reset player variables but keep game timer counting.
+                    // Respawn Timer is 0, show the respawn button.
                     if (respawnTimerRef.current <= 0) {
-                        if (checkpointSet) {
-                            handleCheckpointRespawn();
-                        }
-                        setStoryline([lastCheckpoint]);
-                        setOptionOneText(lastCheckpoint);
-                        setOptionTwoText(lastCheckpoint);
-                        setAlive(true);
-                        setDeaths((deaths) => deaths + 1);
-                        respawnTimerRef.current = 5000;
+                        setShowRespawnButton(true);
                         clearInterval(intervalId);
                     }
 
@@ -176,6 +169,22 @@ export default function Solo({ supabase }) {
         // Update the possible options.
         setOptionOneText(next);
         setOptionTwoText(next);
+    }
+
+    // Reset all variables required and move the player back to the beginning or checkpoint.
+    function respawn() {
+        setShowRespawnButton(false);
+        
+        if (checkpointSet) {
+            handleCheckpointRespawn();
+        }
+
+        setStoryline([lastCheckpoint]);
+        setOptionOneText(lastCheckpoint);
+        setOptionTwoText(lastCheckpoint);
+        setAlive(true);
+        setDeaths((deaths) => deaths + 1);
+        respawnTimerRef.current = 5000;
     }
 
     // Add the Player's Time to the Leaderboard including their Deaths, Username, and Color Choice
@@ -253,11 +262,11 @@ export default function Solo({ supabase }) {
             <div className={`w-1/2 bg-neutral-800`}>
                 {/* Top Header */}
                 <div className={`h-[7%] bg-neutral-800 py-2 flex justify-between items-center gap-5 w-full px-2`}>
-                    <button disabled={!alive} onClick={handlePauseResume} className={`bg-neutral-700 border border-neutral-600 disabled:pointer-events-none hover:bg-neutral-700 hover:opacity-80 transition-all duration-200 ease-in-out cursor-pointer px-2 py-2 rounded-lg`}>
+                    <button onClick={handlePauseResume} className={`bg-neutral-700 border border-neutral-600 hover:bg-neutral-700 hover:opacity-80 transition-all duration-200 ease-in-out cursor-pointer px-2 py-2 rounded-lg`}>
                         {isPaused ? <HiPlay size={20} fill="white" /> : <HiPause size={20} fill="white" />}
                     </button>
                     <p className={`font-semibold text-white`}><Timer time={time} /></p>
-                    <button disabled={!alive} onClick={() => navigate('/', { replace: true })} className={`bg-red-400 border disabled:pointer-events-none border-red-500 hover:bg-red-500 transition-all duration-200 ease-in-out cursor-pointer px-2 py-1 rounded-lg flex items-center gap-2.5`}>
+                    <button onClick={() => navigate('/', { replace: true })} className={`bg-red-400 border border-red-500 hover:bg-red-500 transition-all duration-200 ease-in-out cursor-pointer px-2 py-1 rounded-lg flex items-center gap-2.5`}>
                         <IoExitOutline size={20} color="white" />
                         <p className={`text-white`}>Stop</p>
                     </button>
@@ -348,7 +357,7 @@ export default function Solo({ supabase }) {
                             </motion.div>
                         </div>
                     </div>
-                ) : (
+                ) : !alive && (
                     <div className={`w-full h-full flex justify-center items-center flex-col relative`}>
                         {/* Show Image Relating to the End */}
                         {optionOneText && <img className={`w-full h-screen transition-all duration-200 ease-in-out z-10`} src={data[optionOneText.id] ? data[optionOneText.id].src : ``} alt={data[optionOneText.id]?.alt} />}
@@ -356,8 +365,19 @@ export default function Solo({ supabase }) {
                         {/* Game Over Modal */}
                         <motion.div initial={{ y: 0, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ ease: "linear", duration: 0.5 }} className={`absolute z-20 p-5 rounded-lg bg-base-300 drop-shadow-sm flex flex-col justify-center`}>
                             <motion.p className={`mb-3 font-retro z-20 text-5xl font-extrabold px-4 py-2.5 pt-4 rounded-lg`}>GAME OVER</motion.p>
-                            <p className={`text-2xl mb-3 font-semibold flex gap-1.5 mx-auto`}>Respawning In: <span className={`text-red-400`}><Timer time={respawnTimerRef.current} /></span></p>
-                            <button onClick={() => navigate('/', { replace: true })} className={`btn btn-error btn-lg`}>Return to Home</button>
+                            <p className={`text-2xl mb-3 font-semibold flex gap-1.5 mx-auto`}>Respawning In:
+                                {showRespawnButton ? (
+                                    <span className={`text-green-400`}>00:00:00</span>
+                                ) : (
+                                    <span className={`text-red-400`}><Timer time={respawnTimerRef.current} /></span>
+                                )}
+                            </p>
+                            <div className={`w-full flex items-center justify-between`}>
+                                <button onClick={() => navigate('/', { replace: true })} className={`btn btn-error btn-lg ${showRespawnButton ? `w-[48%]` : `w-full`}`}>Return to Home</button>
+
+                                {/* Only show the respawn button if the countdown has ended. */}
+                                {showRespawnButton && <button onClick={respawn} className={`btn btn-success btn-lg w-[48%]`}>Respawn!</button>}
+                            </div>
                         </motion.div>
                     </div>
                 )}

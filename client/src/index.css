@@ -10,6 +10,13 @@
 /* Add a New Font to my TailwindCSS Classes */
 @theme {
     --font-retro: "Press Start 2P", cursive;
+    --animate-typing: typing 1s steps(25) forwards;
+
+    @keyframes typing {
+      to {
+        left: 100%;
+      }
+    }
 }
 
 /* Scrollbar Design */
