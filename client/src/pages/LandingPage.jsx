@@ -20,6 +20,7 @@ export default function LandingPage({ supabase }) {
     async function handlePlayButton() {
         const userResult = times.find((value) => value.username.trim() === username.trim());
 
+        // Username Validation, Check for Uniqueness & If it is Not Blank
         if (userResult) {
             setUsernameError(true);
             setUsernameErrorMessage("Username already exists, please select another!");
@@ -83,7 +84,7 @@ export default function LandingPage({ supabase }) {
                     </div>
                 </div>
 
-                {/*  */}
+                {/* Middle Section, Begin & How to Play */}
                 <div className={`col-span-4 rounded-lg drop-shadow-sm flex flex-col gap-3`}>
                     <img src={appLogo} className={`w-4/6 mx-auto h-auto drop-shadow-2xl`} alt='Logo' />
                     <input value={username} onChange={(e) => setUsername(e.target.value)} className={`w-full rounded-lg px-4 text-2xl py-2 focus:outline-none focus:ring-2 placeholder:text-gray-400 text-black focus:ring-offset-2 focus:ring-offset-transparent focus:ring-neutral-200 bg-white`} placeholder={`Username`} type={`text`} />
@@ -94,6 +95,8 @@ export default function LandingPage({ supabase }) {
                         <p>How to Play</p>
                     </button>
                 </div>
+
+                {/* End Section, Leaderboard */}
                 <div className='col-span-4 rounded-lg bg-base-300 drop-shadow-sm p-5'>
                     <p className={`text-2xl font-semibold mb-5`}>Global Leaderboard</p>
 
@@ -109,7 +112,8 @@ export default function LandingPage({ supabase }) {
                     </div>
                 </div>
             </div>
-
+            
+            {/* Modal for How to Play */}
             <dialog id={`how_to_play_modal`} className={`modal`}>
                 <div className={`modal-box w-6/12 max-w-5xl`}>
                     <form method="dialog">
