@@ -52,25 +52,11 @@ export default function LandingPage({ supabase }) {
 
     return (
         <div theme={`light`} className={`w-screen h-screen bg-neutral-800 px-10 py-10 flex justify-center items-center`}>
-            <img className={`w-screen h-screen fixed top-0 left-0`} src={temple} about={`bg`} />
-            {/* Header/Navbar */}
-            {/* <div className={`flex items-center justify-between w-full mx-auto py-5 px-5 rounded-lg bg-gray-100`}>
-                <p className={`text-xl font-bold`}>Storied</p>
-                <div className={`flex gap-5`}>
-                <p>Home</p>
-                <p>About Us</p>
-                <p>Get Started</p>
-                <p>Features</p>
-                <p>Contact</p>
-                </div>
-                <div className={`flex gap-3`}>
-                <button className={`bg-purple-200 px-3 py-1.5 rounded-md border border-purple-200 cursor-pointer hover:bg-purple-300 hover:border-purple-300 transition-all duration-200 ease-in-out`}>Login</button>
-                <button className={`px-3 py-1.5 rounded-md border border-purple-200 cursor-pointer hover:border-purple-300 hover:bg-purple-300 transition-all duration-200 ease-in-out`}>Register</button>
-                </div>
-            </div> */}
+            <img className={`w-screen h-screen fixed top-0 left-0`} src={temple} about={`bg`} /> {/* BG Image */}
 
             {/* First Look */}
             <div className={`grid grid-cols-12 gap-5 w-screen p-10`}>
+                {/* Gather Cookies to Show Best Statistics on the Local Device of the Player */}
                 <div className={`col-span-4 rounded-lg drop-shadow-sm flex flex-col gap-3`}>
                     <div className={`rounded-lg p-7 bg-base-300`}>
                         <p className={`text-2xl font-semibold`}>Best Statistics</p>
@@ -96,6 +82,8 @@ export default function LandingPage({ supabase }) {
                         )}
                     </div>
                 </div>
+
+                {/*  */}
                 <div className={`col-span-4 rounded-lg drop-shadow-sm flex flex-col gap-3`}>
                     <img src={appLogo} className={`w-4/6 mx-auto h-auto drop-shadow-2xl`} alt='Logo' />
                     <input value={username} onChange={(e) => setUsername(e.target.value)} className={`w-full rounded-lg px-4 text-2xl py-2 focus:outline-none focus:ring-2 placeholder:text-gray-400 text-black focus:ring-offset-2 focus:ring-offset-transparent focus:ring-neutral-200 bg-white`} placeholder={`Username`} type={`text`} />

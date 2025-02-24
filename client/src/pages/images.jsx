@@ -1,3 +1,6 @@
+// This file is mostly for all the images in the adventure.
+// It's in a seperate file to make the code easier to read.
+
 // River Path Assets
 import introScene from './assets/other/Intro_Scene_1.png';
 import swimAcross from './assets/river-path/SwimAcross.png';
@@ -31,6 +34,7 @@ import pushForward from './assets/jungle-path/pushForward.png';
 import grabSomething from './assets/jungle-path/grabOntoSomething.png';
 import jaguar from './assets/jungle-path/Jaguar.png';
 
+// Sort images by choice ID
 const data = {
     1: { src: introScene, alt: "Intro Scene" },
     2: { src: riverPath, alt: "River" },

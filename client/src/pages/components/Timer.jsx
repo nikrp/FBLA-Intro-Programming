@@ -1,4 +1,5 @@
 // Displays Stopwach when Adventuring
+// Formats it in a nice way.
 export default function Timer(data) {
     return (
         <div>
