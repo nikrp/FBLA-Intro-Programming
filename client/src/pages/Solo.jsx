@@ -1,6 +1,6 @@
 import MessageComponent, { Message } from "./components/MessageComponent";
 import Timer from './components/Timer';
-import { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { IoExitOutline } from "react-icons/io5";
 import { HiPlay, HiPause } from "react-icons/hi2";
@@ -15,6 +15,7 @@ export default function Solo({ supabase }) {
     const [storyline, setStoryline] = useState([]);
     const [optionOneText, setOptionOneText] = useState(undefined); // Option 1
     const [optionTwoText, setOptionTwoText] = useState(undefined); // Option 2
+    const [optionNumber, setOptionNumber] = useState(0);
     const [story, setStory] = useState([]);
     const [alive, setAlive] = useState(true);
     const [success, setSuccess] = useState(false);
@@ -167,6 +168,8 @@ export default function Solo({ supabase }) {
         }
         
         // Update the possible options.
+        setOptionNumber(Math.floor(Math.random() * 2));
+        console.log(Math.floor(Math.random() * 2));
         setOptionOneText(next);
         setOptionTwoText(next);
     }
@@ -226,12 +229,6 @@ export default function Solo({ supabase }) {
         const { data, error } = await supabase.from("Times").select();
         if (!error) { // Only if there was no error with retrieving times.
             const dup = data.find((value) => value.username.trim() === e.target.value.trim());
-
-            for (const u of data) {
-                console.log(u.username.trim(), e.target.value.trim(), u.username.trim() === e.target.value.trim());
-            }
-
-            console.log(data, dup);
 
             if (dup) {
                 e.target.setCustomValidity("Username already taken, please try another one!");
@@ -294,19 +291,24 @@ export default function Solo({ supabase }) {
                 {/* Show Response Options (Only if Alive) */}
                 <div className={`h-[17.5%] bg-neutral-800 py-2 flex justify-center items-center gap-10 w-full`}>
                     {alive && optionOneText && optionTwoText && (
-                        <>
-                            <div aria-readonly={isPaused} onClick={() => selectChoice({ type: "response", responseText: optionOneText.option_1_text, id: optionOneText.option_1 })} className={`hover:opacity-60 ${ isPaused && `blur-sm pointer-events-none` } bg-neutral-600 cursor-pointer transition-all duration-200 ease-in-out rounded-lg border-neutral-600 border-2 h-fit p-2 text-white drop-shadow-lg w-4/12`}>
-                                <p>{optionOneText.option_1_text}</p>
-                            </div>
-                            {optionTwoText.option_2 !== null && ( // If Option 2 exists, show it.
-                                <div aria-readonly={isPaused} onClick={() => selectChoice({ type: "response", responseText: optionTwoText.option_2_text, id: optionTwoText.option_2 })} className={`hover:opacity-60 ${ isPaused && `blur-sm pointer-events-none` } bg-neutral-600 cursor-pointer transition-all duration-200 ease-in-out rounded-lg border-neutral-600 border-2 h-fit p-2 text-white drop-shadow-lg w-4/12`}>
-                                    <p>{optionTwoText.option_2_text}</p>
-                                </div>
-                            )}
-                            
-                        </>
+                        (() => {
+                            const key1 = optionNumber === 0 ? ["option_1_text", "option_1"] : ["option_2_text", "option_2"];
+                            const key2 = optionNumber === 0 ? ["option_2_text", "option_2"] : ["option_1_text", "option_1"];
+
+                            return (
+                                <React.Fragment>
+                                    <div aria-readonly={isPaused} onClick={() => selectChoice({ type: "response", responseText: optionOneText[key1[0]], id: optionOneText[key1[1]] })} className={`hover:opacity-60 ${ isPaused && `blur-sm pointer-events-none` } bg-neutral-600 cursor-pointer transition-all duration-200 ease-in-out rounded-lg border-neutral-600 border-2 h-fit p-2 text-white drop-shadow-lg w-4/12`}>
+                                        <p>{optionOneText[key1[0]]}</p>
+                                    </div>
+                                    {optionTwoText[key2[1]] !== null && ( // If Option 2 exists, show it.
+                                        <div aria-readonly={isPaused} onClick={() => selectChoice({ type: "response", responseText: optionTwoText[key2[0]], id: optionTwoText[key2[1]] })} className={`hover:opacity-60 ${ isPaused && `blur-sm pointer-events-none` } bg-neutral-600 cursor-pointer transition-all duration-200 ease-in-out rounded-lg border-neutral-600 border-2 h-fit p-2 text-white drop-shadow-lg w-4/12`}>
+                                            <p>{optionTwoText[key2[0]]}</p>
+                                        </div>
+                                    )}
+                                </React.Fragment>
+                            )
+                        })()
                     )}
-                    
                 </div>
             </div>
 

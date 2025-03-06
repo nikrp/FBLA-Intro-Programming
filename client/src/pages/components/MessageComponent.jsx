@@ -30,7 +30,6 @@ export function Message(messageText) {
 // Main component that can hold all of the Message components for each dialouge line.
 // Type represents whether the message was a response from the player or dialouge.
 export default function MessageComponent({children, type, text}) {
-    console.log(React.Children.toArray(children));
     return (
         <div className={`flex gap-2 w-[90%]`}>
             {type === "prompt" ? ( // Dialouge
