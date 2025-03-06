@@ -1,6 +1,20 @@
 # FBLA-Intro-Programming | The Grand Adventure
 Our project for FBLA's Introduction to Programming: **The Grand Adventure**
 
+## Tech stack
+We use a modern tech stack that is up to date with all the libraries we need for our app.
+
+**Frontend**: ReactJS + Vite 
+**Styling**:
+
+| Category         | Tech                  |
+|------------------|-----------------------|
+| Frontend         | ReactJS + Vite        |
+| Styling          | TailwindCSS + DaisyUI |
+| Backend          | Supabase              |
+
+More about this stack and the various libraries we used can be seen at [Libraries/Frameworks Used](#libraries-and-frameworks-used)
+
 ## Roles
 | Name             | Role              |
 |------------------|-------------------|
@@ -42,7 +56,7 @@ The biggest challenge while we were developing the app was teaching each other a
 
 Because of this, Nikhil had to teach Ishaan the basics of ReactJS and TailwindCSS along the way and Ishaan had to help Nikhil smoothen his presentation skills and be more confident. This mutual relationship helped us finish the game and understand it as a group.
 
-## Libraries/Frameworks Used
+## Libraries and Frameworks Used
 
 We used a variety of tools in our application that makes it better.
 
