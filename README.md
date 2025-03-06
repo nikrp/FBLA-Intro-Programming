@@ -21,7 +21,7 @@ More about this stack and the various libraries we used can be seen at [Librarie
 | Nikhil Pellakuru | Lead Developer    |
 | Ishaan Garg      | Presentation Lead |
 
-Every member of the group still worked on each component, but since some people were more experienced than others at specific tasks, they led the section and managed it.
+Every group member still worked on each component, but since some people were more experienced than others at specific tasks, they led and managed the section.
 
 ## How The Grand Adventure Works
 1. Users begin their journey by loading into [our webpage](https://the-grand-adventure.vercel.app), which you can also see in our repository information. BUT A WARNING: Our published site is not completely ready for use yet as we haven't implemented reponsive design YET. In the future, this is our top priority before getting our game out to the world.
