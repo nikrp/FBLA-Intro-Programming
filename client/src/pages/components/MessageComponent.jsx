@@ -31,7 +31,7 @@ export function Message(messageText) {
 // Type represents whether the message was a response from the player or dialouge.
 export default function MessageComponent({children, type, text}) {
     return (
-        <div className={`flex gap-2 w-[90%]`}>
+        <div className={`flex gap-4 w-[100%]`}>
             {type === "prompt" ? ( // Dialouge
                 <div className={`flex items-start gap-4`}>
                     <div className={`p-5 bg-neutral-600 rounded-full h-fit w-fit`}></div>
