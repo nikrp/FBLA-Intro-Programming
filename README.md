@@ -24,14 +24,6 @@ We use a modern tech stack that is up to date with all the libraries we need for
 
 More about this stack and the various libraries we used can be seen at [Libraries/Frameworks Used](#libraries-and-frameworks-used)
 
-## Roles
-| Name             | Role              |
-|------------------|-------------------|
-| Nikhil Pellakuru | Lead Developer    |
-| Ishaan Garg      | Presentation Lead |
-
-Every member of the group still worked on each component, but since some people were more experienced than others at specific tasks, they led the section and managed it.
-
 ## How The Grand Adventure Works
 1. Users begin their journey by loading into [our webpage](https://the-grand-adventure.vercel.app), which you can also see in our repository information. BUT A WARNING: Our published site is not completely ready for use yet as we haven't implemented reponsive design YET. In the future, this is our top priority before getting our game out to the world.
 
@@ -58,12 +50,6 @@ The stopwatch can be paused at anytime if the user needs to do something. And wh
 - Customizable username after winning.
 - Top 10 Global Leaderboard.
 - Best time local to browser using Cookies.
-
-## Challenges During the Development Process
-
-The biggest challenge while we were developing the app was teaching each other along the way. While Ishaan was able to create presentations and talk freely, he didn't have much prior experience with coding, expecially a tech stack like ours. Vice versa with Nikhil, he has experience in coding but not much in presenting or talking.
-
-Because of this, Nikhil had to teach Ishaan the basics of ReactJS and TailwindCSS along the way and Ishaan had to help Nikhil smoothen his presentation skills and be more confident. This mutual relationship helped us finish the game and understand it as a group.
 
 ## Libraries and Frameworks Used
 
