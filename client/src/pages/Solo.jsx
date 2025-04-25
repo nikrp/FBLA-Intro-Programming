@@ -11,18 +11,22 @@ import Cookies from 'js-cookie';
 import { ToastContainer, toast } from 'react-toastify';
 
 export default function Solo({ supabase }) {
-    // State Variables
+    // Story & Choices
     const [storyline, setStoryline] = useState([]);
     const [optionOneText, setOptionOneText] = useState(undefined); // Option 1
     const [optionTwoText, setOptionTwoText] = useState(undefined); // Option 2
+    const [optionsSelected, setOptionsSelected] = useState(0);
     const [story, setStory] = useState([]);
+
+    // Player State
     const [alive, setAlive] = useState(true);
     const [success, setSuccess] = useState(false);
     const [isActive, setIsActive] = useState(false);
     const [isPaused, setIsPaused] = useState(true);
+
+    // Statistics
     const [time, setTime] = useState(0);
     const [deaths, setDeaths] = useState(0);
-    const [optionsSelected, setOptionsSelected] = useState(0);
     const [rank, setRank] = useState(0);
 
     // Refrences
@@ -33,10 +37,11 @@ export default function Solo({ supabase }) {
     const respawnTimer = 5000;
     const respawnTimerRef = useRef(respawnTimer);
 
-    const navigate = useNavigate(); // Move between pages
-    const location = useLocation(); // Contains Username passed From LandingPage.jsx
+    // React Router Navigation
+    const navigate = useNavigate(); // Navigate
+    const location = useLocation(); // Object containing username from LandingPage.jsx
 
-    // Player Prefrences
+    // Player Preferences
     const [colorChoice, setColorChoice] = useState("rgb(94.38%, 97.41%, 100%)");
     const [username, setUsername] = useState(location.state.username);
     const [editUsername, setEditUsername] = useState(false);
@@ -105,7 +110,7 @@ export default function Solo({ supabase }) {
 
     // Get the rank of this users time once they win.
     async function getPlayerRank() {
-        const { data, error } = await supabase.from("Times").select();
+        const { data, error } = await supabase.from("Times_Real").select();
 
         if (error) {
             console.error("Error fetching times:", error);
@@ -175,11 +180,23 @@ export default function Solo({ supabase }) {
     function respawn() {
         setShowRespawnButton(false);
         
+
         if (checkpointSet) {
             handleCheckpointRespawn();
+
+            // Include the previous choice and checkpoint dialogue in the storyline
+            const previousChoice = storyline[storyline.length - 2];
+            alert(JSON.stringify(previousChoice, null, 2));
+
+            if (previousChoice) {
+                setStoryline([previousChoice, lastCheckpoint]); // Add both the previous choice and checkpoint to the storyline
+            } else {
+                setStoryline([lastCheckpoint]); // If no previous choice exists, just add the checkpoint
+            }
+        } else {
+            setStoryline([lastCheckpoint]); // Default behavior if no checkpoint is set
         }
 
-        setStoryline([lastCheckpoint]);
         setOptionOneText(lastCheckpoint);
         setOptionTwoText(lastCheckpoint);
         setAlive(true);
@@ -190,7 +207,7 @@ export default function Solo({ supabase }) {
     // Add the Player's Time to the Leaderboard including their Deaths, Username, and Color Choice
     async function addTime() {
         // Insert New Record into Times Table
-        const { error } = await supabase.from("Times").insert({ username: username, seconds: time, deaths: deaths, color: colorChoice, options_selected: optionsSelected });
+        const { error } = await supabase.from("Times_Real").insert({ username: username, seconds: time, deaths: deaths, color: colorChoice, options_selected: optionsSelected });
 
         if (error) { // Error while inserting data
             console.error("Error inserting data:", error);
@@ -223,7 +240,7 @@ export default function Solo({ supabase }) {
 
     // Check if the edited username after winning is a duplicate.
     async function handleValidation(e) {
-        const { data, error } = await supabase.from("Times").select();
+        const { data, error } = await supabase.from("Times_Real").select();
         if (!error) { // Only if there was no error with retrieving times.
             const dup = data.find((value) => value.username.trim() === e.target.value.trim());
 

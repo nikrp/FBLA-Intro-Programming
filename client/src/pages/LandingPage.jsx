@@ -37,7 +37,7 @@ export default function LandingPage({ supabase }) {
     useEffect(() => {
         // Retrieve all times every recorded.
         async function retrieveTimes() {
-            const { data, error } = await supabase.from("Times").select();
+            const { data, error } = await supabase.from("Times_Real").select();
 
             // Make sure to update values only if there is no error with retrieving data.
             if (data) {
