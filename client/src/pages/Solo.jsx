@@ -186,7 +186,6 @@ export default function Solo({ supabase }) {
 
             // Include the previous choice and checkpoint dialogue in the storyline
             const previousChoice = storyline[storyline.length - 2];
-            alert(JSON.stringify(previousChoice, null, 2));
 
             if (previousChoice) {
                 setStoryline([previousChoice, lastCheckpoint]); // Add both the previous choice and checkpoint to the storyline
