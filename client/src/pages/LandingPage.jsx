@@ -7,7 +7,7 @@ import howToPlayStep2 from './assets/other/howToPlayStep2.png';
 import appLogo from './assets/other/app-logo.png';
 import temple from './assets/other/temple.png';
 import Cookies from 'js-cookie';
-import { IoIosCheckmarkCircle } from 'react-icons/io';
+import { LoaderCircle } from 'lucide-react';
 
 export default function LandingPage({ supabase }) {
     const [username, setUsername] = useState("");
@@ -41,7 +41,7 @@ export default function LandingPage({ supabase }) {
     useEffect(() => {
         // Retrieve all times every recorded.
         async function retrieveTimes() {
-            const { data, error } = await supabase.from("Times").select();
+            const { data, error } = await supabase.from("Times_Real").select();
 
             // Make sure to update values only if there is no error with retrieving data.
             if (data) {
@@ -86,7 +86,9 @@ export default function LandingPage({ supabase }) {
                             <p className={`text-lg text-secondary`}>Play an adventure to see it come here!</p>
                         )}
                     </div>
-                    <div className={`rounded-lg p-7 bg-base-300`}>
+
+                    {/* Battle Statistics */}
+                    {/* <div className={`rounded-lg p-7 bg-base-300`}>
                         <p className={`text-2xl font-semibold`}>Best Battle Statistics</p>
                         <div className={`w-full h-0.5 my-2.5 bg-neutral-500`}></div>
                         {Cookies.get("username") ? (
@@ -108,32 +110,34 @@ export default function LandingPage({ supabase }) {
                         ) : (
                             <p className={`text-lg text-secondary`}>Play an adventure to see it come here!</p>
                         )}
-                    </div>
+                    </div> */}
                 </div>
 
                 {/* Middle Section, Begin & How to Play */}
                 <div className={`col-span-4 rounded-lg drop-shadow-sm flex flex-col gap-3`}>
                     <img src={appLogo} className={`w-3/6 mx-auto h-auto drop-shadow-2xl`} alt='Logo' />
-                    <div className={`flex items-center gap-5 relative`}>
+                    {/* Solo & Battle Mode Buttons */}
+                    {/* <div className={`flex items-center gap-5 relative`}>
                             <div onClick={() => setSoloMode(!soloMode)} className={`transition-all flex justify-center text-2xl items-center duration-200 ease-in-out w-1/2 h-20 rounded-xl border-2 ${soloMode ? `border-green-400 bg-gray-800` : `border-gray-700 bg-gray-700 cursor-pointer hover:bg-gray-800 hover:border-gray-800`}`}>
                                 Solo Mode
                             </div>
                             <div onClick={() => setSoloMode(!soloMode)} className={`transition-all flex justify-center text-2xl items-center duration-200 ease-in-out w-1/2 h-20 rounded-xl border-2 ${!soloMode ? `border-green-400 bg-gray-800` : `border-gray-700 bg-gray-700 cursor-pointer hover:bg-gray-800 hover:border-gray-800`}`}>
                                 Battle Mode
                             </div>
-                    </div>
+                    </div> */}
                     <input value={username} onChange={(e) => setUsername(e.target.value)} className={`w-full rounded-lg px-4 text-2xl py-2 focus:outline-none focus:ring-2 placeholder:text-gray-400 text-black focus:ring-offset-2 focus:ring-offset-transparent focus:ring-neutral-200 bg-white`} placeholder={`Username`} type={`text`} />
                     {usernameError && <p className={`text-red-500 text-xl bg-white py-1.5 px-2.5 rounded-lg drop-shadow-sm`}>{usernameErrorMessage}</p>}
                     <button onClick={handlePlayButton} className={`text-3xl rounded-lg bg-emerald-400 w-full px-4 py-2 cursor-pointer hover:bg-emerald-300 transition-all duraiton-200 ease-in-out`}>Play</button>
                     <div className={`w-full flex justify-between`}>
                         <button onClick={() => document.getElementById('how_to_play_solo_modal').showModal()} className={`w-fit px-3 py-3 btn btn-accent btn-lg btn-square cursor-pointer transition-all duration-200 ease-in-out flex items-center gap-1.5`}>
                             <IoHelpOutline size={20} />
-                            <p>How to Solo</p>
+                            <p>How to Play</p>
                         </button>
-                        <button onClick={() => document.getElementById('how_to_play_battle_modal').showModal()} className={`w-fit px-3 py-3 btn btn-error btn-lg btn-square cursor-pointer transition-all duration-200 ease-in-out flex items-center gap-1.5`}>
+                        {/* How to Battle Button */}
+                        {/* <button onClick={() => document.getElementById('how_to_play_battle_modal').showModal()} className={`w-fit px-3 py-3 btn btn-error btn-lg btn-square cursor-pointer transition-all duration-200 ease-in-out flex items-center gap-1.5`}>
                             <IoHelpOutline size={20} />
                             <p>How to Battle</p>
-                        </button>
+                        </button> */}
                     </div>
                 </div>
 
@@ -142,14 +146,14 @@ export default function LandingPage({ supabase }) {
                     <p className={`text-2xl font-semibold mb-5`}>Global Leaderboard</p>
 
                     <div className={`flex flex-col gap-4`}>
-                        {leaderboard.map((value, index) => {
+                        {leaderboard.length > 0 ? leaderboard.map((value, index) => {
                             return (
                                 <div key={index} className={`flex items-center justify-between`}>
                                     <p style={{ color: value.color }} className={`text-xl font-semibold line-clamp-1`}>{index + 1}. {value.username}</p>
                                     <p className={`text-accent text-xl font-bold`}><Timer time={value.seconds} /></p>
                                 </div>
                             );
-                        })}
+                        }) : <div className={`flex items-center justify-center`}><LoaderCircle className={`animate-spin`} /></div>}
                     </div>
                 </div>
             </div>

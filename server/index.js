@@ -9,7 +9,7 @@ app.use(cors);
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:5173",
+        origin: "https://fbla-intro-programming-git-nlc-updates-nikrps-projects.vercel.app",
         methods: ["GET", "POST"],
     }
 });
