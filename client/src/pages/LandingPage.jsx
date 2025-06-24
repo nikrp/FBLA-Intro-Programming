@@ -129,7 +129,7 @@ export default function LandingPage({ supabase }) {
                     {usernameError && <p className={`text-red-500 text-xl bg-white py-1.5 px-2.5 rounded-lg drop-shadow-sm`}>{usernameErrorMessage}</p>}
                     <button onClick={handlePlayButton} className={`text-3xl rounded-lg bg-emerald-400 w-full px-4 py-2 cursor-pointer hover:bg-emerald-300 transition-all duraiton-200 ease-in-out`}>Play</button>
                     <div className={`w-full flex justify-between`}>
-                        <button onClick={() => document.getElementById('how_to_play_solo_modal').showModal()} className={`w-fit px-3 py-3 btn btn-accent btn-lg btn-square cursor-pointer transition-all duration-200 ease-in-out flex items-center gap-1.5`}>
+                        <button onClick={() => document.getElementById('how_to_play_solo_modal').showModal()} className={`w-fit px-3 py-3 btn btn-accent btn-lg btn-square animate-bounce cursor-pointer transition-all duration-200 ease-in-out flex items-center gap-1.5`}>
                             <IoHelpOutline size={20} />
                             <p>How to Play</p>
                         </button>
