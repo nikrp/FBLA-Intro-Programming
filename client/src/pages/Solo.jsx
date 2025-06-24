@@ -478,10 +478,6 @@ export default function Solo({ supabase }) {
                         {/* Congratulations Modal */}
                         <div className={`w-screen h-screen z-100 fixed top-0 left-91 flex justify-center items-center`}>
                             <motion.div initial={{ y: 0, opacity: 0 }} animate={{ y: 0, opacity: 0.95 }} transition={{ ease: "linear", duration: 0.5 }} className={`z-20 p-5 relative drop-shadow-2xl rounded-lg bg-base-300 flex flex-col justify-center`}>
-                                {/* Action Row to Share and Download Results as Icons with Tooltips */}
-                                <div className={`flex gap-3.5 items-center absolute -top-14 left-0`}>
-                                    <button onClick={loadTemplate} className={`btn btn-square btn-neutral tooltip tooltip-top flex items-center justify-center`} data-tip={`Download Results`}><IoDownloadOutline size={20} color="white" /></button>
-                                </div>
                                 <motion.p className={`mb-7 font-retro z-20 text-4xl font-extrabold px-4 py-2.5 pt-4 rounded-lg text-success`}>Congratulations!</motion.p>
                                 <div className={`flex gap-2.5 mx-auto items-start w-fit h-20 mb-5`}>
                                     <div onClick={() => colorRef.current.click()} className={`p-[7px] border hover:bg-base-100 border-neutral-600 btn btn-square flex relative`}>
@@ -507,7 +503,10 @@ export default function Solo({ supabase }) {
                                     <p className={`text-2xl text-error font-bold`}>{optionsSelected}</p>
                                 </div>
                                 <p className={`w-full text-center text-2xl font-semibold text-secondary`}>Rank: {rank}</p>
-                                <button disabled={usernameDup} onClick={() => {addTime()}} className={`btn btn-success btn-lg disabled:opacity-75 mt-10`}>Return to Home</button>
+                                <div className={`flex items-center w-full gap-2.5`}>
+                                    <button onClick={loadTemplate} className={`flex items-center gap-1.5 btn btn-error mt-10 btn-lg w-[49%]`}><IoDownloadOutline size={20} /> Download Results</button>
+                                    <button disabled={usernameDup} onClick={() => {addTime()}} className={`btn btn-success btn-lg disabled:opacity-75 mt-10 w-[49%]`}>Return to Home</button>
+                                </div>
                             </motion.div>
                         </div>
                     </div>
