@@ -1,6 +1,6 @@
 import MessageComponent, { Message } from "./components/MessageComponent";
 import Timer from './components/Timer';
-import { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { IoExitOutline } from "react-icons/io5";
 import { HiPlay, HiPause } from "react-icons/hi2";
@@ -9,12 +9,29 @@ import data from "./images";
 import { TbEdit } from "react-icons/tb";
 import Cookies from 'js-cookie';
 import { ToastContainer, toast } from 'react-toastify';
+import { IoShareSocialOutline, IoDownloadOutline } from "react-icons/io5";
+import { jsPDF } from "jspdf";
+import { PDFDocument, rgb } from 'pdf-lib';
+import pdfTemplate from './assets/other/congratulations.pdf';
+import fontr from './assets/other/retro.ttf';
+import fontkit from '@pdf-lib/fontkit'
 
+/**
+ * The Solo mode page of the game. Basically Future-proofing for Multiplayer instead
+ * of having the refactor everything if we were to add the feature.
+ * @param {*} supabase - Supabase client that the page will use to communicate with the database.
+ * @returns The Solo page.
+ * @see MessageComponent - Component that displays the storyline.
+ * @see Timer - Component that displays the stopwatch.
+ * @see Message - Component that displays the options.
+ * @see data - Array of objects that contains the storyline images.
+ */
 export default function Solo({ supabase }) {
     // Story & Choices
     const [storyline, setStoryline] = useState([]);
     const [optionOneText, setOptionOneText] = useState(undefined); // Option 1
     const [optionTwoText, setOptionTwoText] = useState(undefined); // Option 2
+    const [optionNumber, setOptionNumber] = useState(0);
     const [optionsSelected, setOptionsSelected] = useState(0);
     const [story, setStory] = useState([]);
 
@@ -53,12 +70,16 @@ export default function Solo({ supabase }) {
     const [halfwayIndex, setHalfwayIndex] = useState(0);
     const [checkpointSet, setCheckpointSet] = useState(false);
 
-    // Scroll down automatically everytime more content is added the the storyline.
+    /**
+     * Scroll down automatically everytime more content is added the the storyline.
+     */
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }, [storyline]);
 
-    // Handle changes to the stopwatch.
+    /**
+     * Handle changes to the stopwatch.
+     */
     useEffect(() => {
         let interval = null;
 
@@ -75,12 +96,17 @@ export default function Solo({ supabase }) {
         }
     }, [isActive, isPaused]);
 
-    // Pause the stopwatch.
+    /**
+     * Pause and resume the stopwatch.
+     */
     function handlePauseResume() {
         setIsPaused(!isPaused);
     }
 
-    // Collect the entire story from supabase when the page loads and starts the storyline with the first choices.
+    /**
+     * Collect the entire story from supabase when the page loads and starts the storyline with the first choices.
+     * @see collectStory() - Collects the story from supabase and sets the state variables.
+     */
     useEffect(() => {
         async function collectStory() {
             const { data, error } = await supabase.from("JungleStory").select();
@@ -108,7 +134,10 @@ export default function Solo({ supabase }) {
         collectStory();
     }, []);
 
-    // Get the rank of this users time once they win.
+    /**
+     * Get the rank of this users time once they win.
+     * @returns The rank of the player if they would be added tot he leaderboards.
+     */
     async function getPlayerRank() {
         const { data, error } = await supabase.from("Times_Real").select();
 
@@ -136,7 +165,10 @@ export default function Solo({ supabase }) {
         setRank(rank)
     }
 
-    // Whenever a choice is selected, this method is called.
+    /**
+     * Whenever a choice is selected, this method is called.
+     * @param {*} selected - The choice that was selected. Checked for possible endings.
+     */
     function selectChoice(selected) {
         const next = story.find((val) => val.id === selected.id);
         const newStoryLine = [...storyline, selected, next];
@@ -172,11 +204,15 @@ export default function Solo({ supabase }) {
         }
         
         // Update the possible options.
+        setOptionNumber(Math.floor(Math.random() * 2));
+        console.log(Math.floor(Math.random() * 2));
         setOptionOneText(next);
         setOptionTwoText(next);
     }
 
-    // Reset all variables required and move the player back to the beginning or checkpoint.
+    /**
+     * Reset all variables required and move the player back to the beginning or checkpoint.
+     */
     function respawn() {
         setShowRespawnButton(false);
         
@@ -203,7 +239,9 @@ export default function Solo({ supabase }) {
         respawnTimerRef.current = 5000;
     }
 
-    // Add the Player's Time to the Leaderboard including their Deaths, Username, and Color Choice
+    /**
+     * Add the Player's Time to the Leaderboard including their Deaths, Username, and Color Choice
+     */
     async function addTime() {
         // Insert New Record into Times Table
         const { error } = await supabase.from("Times_Real").insert({ username: username, seconds: time, deaths: deaths, color: colorChoice, options_selected: optionsSelected });
@@ -213,16 +251,20 @@ export default function Solo({ supabase }) {
         } else { // No error, update local best score through cookies.
             const currentUsername = Cookies.get('username');
             const currentTimeSeconds = Cookies.get('seconds');
+            console.log("Current Username: " + currentUsername);
+            console.log("Current Time: " + currentTimeSeconds);
 
             // Check if cookie already exists, otherwise just add new cookies.
             if (currentUsername) {
                 // Check if new time is better than the time stored in cookies, only then updates info.
+                console.log(currentTimeSeconds, parseInt(currentTimeSeconds), time)
                 if (time < parseInt(currentTimeSeconds)) {
                     Cookies.set('username', username, { expires: 399 });
                     Cookies.set('seconds', time, { expires: 399 });
                     Cookies.set('deaths', deaths, { expires: 399 });
                     Cookies.set('color', colorChoice, { expires: 399 });
                     Cookies.set('options', optionsSelected, { expires: 399 });
+                    console.log("Cookies Updated");
                 }
             } else {
                 Cookies.set('username', username, { expires: 399 });
@@ -230,6 +272,7 @@ export default function Solo({ supabase }) {
                 Cookies.set('deaths', deaths, { expires: 399 });
                 Cookies.set('color', colorChoice, { expires: 399 });
                 Cookies.set('options', optionsSelected, { expires: 399 });
+                console.log("Cookies Set");
             }
 
             // Return Home after Everything
@@ -237,17 +280,14 @@ export default function Solo({ supabase }) {
         }
     }
 
-    // Check if the edited username after winning is a duplicate.
+    /**
+     * Check if the edited username after winning is a duplicate.
+     * @param {*} e - The event object containing the input value to check through supabase.
+     */
     async function handleValidation(e) {
         const { data, error } = await supabase.from("Times_Real").select();
         if (!error) { // Only if there was no error with retrieving times.
             const dup = data.find((value) => value.username.trim() === e.target.value.trim());
-
-            for (const u of data) {
-                console.log(u.username.trim(), e.target.value.trim(), u.username.trim() === e.target.value.trim());
-            }
-
-            console.log(data, dup);
 
             if (dup) {
                 e.target.setCustomValidity("Username already taken, please try another one!");
@@ -260,6 +300,111 @@ export default function Solo({ supabase }) {
                 setUsernameDup(false);
             }
         }
+    }
+
+    /**
+     * Edit template PDF with user's run statistics.
+     * @deprecated - Old method for modifying template PDF with stats. Not used
+     * anymore due to old dependencies being replaced with easier alternatives.
+     * @see loadTemplate() - New method for modifying template PDF with stats.
+     */
+    function downloadResults() {
+        const doc = new jsPDF();
+
+        // Header
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(16);
+        doc.setTextColor(0, 0, 0);
+        doc.text("Congratulations Player", 10, 20);
+        doc.setFont("helvetica", "bold");
+        doc.text(`${username}!`, 10, 30, { maxWidth: 180, align: 'left' });
+
+        // Intro
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(12);
+        doc.text("You have completed one of the many possibilities of The Grand Adventure!", 10, 45);
+
+        // Section Header
+        doc.setDrawColor(0);
+        doc.line(10, 52, 200, 52); // horizontal line separator
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(14);
+        doc.text("Your Results", 10, 60);
+
+        // Stats
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(5);
+        doc.setFillColor("#FFFFFF");
+        const hours = Math.floor(time / (60 * 60 * 1000));
+        const minutes = Math.floor((time % (60 * 60 * 1000)) / (60 * 1000));
+        const seconds = Math.floor((time % (60 * 1000)) / 1000);
+        const milliseconds = time % 1000;
+        doc.text(`• Time Taken:          ${("0" + hours).slice(-2)}:${("0" + minutes).slice(-2)}:${("0" + seconds).slice(-2)}.${("0" + milliseconds).slice(-2)}`, 10, 75);
+        doc.text(`• Total Deaths:         ${deaths}`, 10, 85);
+        doc.text(`• Rank Achieved:     ${rank}`, 10, 95);
+        doc.text(`• Options Selected:  ${optionsSelected}`, 10, 105);
+
+        // Save
+        doc.save(`${username}_GrandAdventure_Stats_Report.pdf`);
+    }
+
+    // Load the template pdf from assets and add the users stats to it.
+    const loadTemplate = async () => {
+        
+        // Load and prepare the PDF template and custom font for modification,
+        // converting them to the right format and getting the first page ready
+        const existingPdfBytes = await fetch(pdfTemplate).then(res => res.arrayBuffer());
+        const fontBytes = await fetch(fontr).then(res => res.arrayBuffer());
+        const pdfDoc = await PDFDocument.load(existingPdfBytes);
+        pdfDoc.registerFontkit(fontkit)
+        const pages = pdfDoc.getPages();
+        const firstPage = pages[0];
+
+        // Load the prepared font and set the global size for easier size changing in the future.
+        const font = await pdfDoc.embedFont(fontBytes);
+        const STAT_FONT_SIZE = 20
+
+        // Draw the username bellow 'Congratulations' text, making calculations for center of PDF.
+        const textWidth = font.widthOfTextAtSize(username, 28);
+        firstPage.drawText(username, { x: 300 - textWidth / 2, y: 550, size: 28, font, color: rgb(0, 0, 1) });
+        const hours = Math.floor(time / (60 * 60 * 1000));
+        const minutes = Math.floor((time % (60 * 60 * 1000)) / (60 * 1000));
+        const seconds = Math.floor((time % (60 * 1000)) / 1000);
+        const milliseconds = time % 1000;
+
+        // Time Statistics
+        const timeText = `${("0" + hours).slice(-2)}:${("0" + minutes).slice(-2)}:${("0" + seconds).slice(-2)}.${("0" + milliseconds).slice(-2)}`;
+        const timeTextWidth = font.widthOfTextAtSize(timeText, STAT_FONT_SIZE);
+        firstPage.drawText(timeText, { x: 500 - timeTextWidth, y: 420, size: STAT_FONT_SIZE, font, color: rgb(1, 1, 0) });
+        
+        // Death Statistics
+        const deathsText = `${deaths}`;
+        const deathsTextWidth = font.widthOfTextAtSize(deathsText, STAT_FONT_SIZE);
+        firstPage.drawText(deathsText, { x: 500 - deathsTextWidth, y: 332.5, size: STAT_FONT_SIZE, font, color: rgb(1, 1, 0) });
+
+        // Amount of options selected during run statistics.
+        const optionsSelectedText = `${optionsSelected}`;
+        const optionsSelectedTextWidth = font.widthOfTextAtSize(optionsSelectedText, STAT_FONT_SIZE);
+        firstPage.drawText(optionsSelectedText, { x: 500 - optionsSelectedTextWidth, y: 245, size: STAT_FONT_SIZE, font, color: rgb(1, 1, 0) });
+
+        // Global Rank Statistics
+        const rankText = `${rank}`;
+        const rankTextWidth = font.widthOfTextAtSize(rankText, STAT_FONT_SIZE);
+        firstPage.drawText(rankText, { x: 500 - rankTextWidth, y: 160, size: STAT_FONT_SIZE, font, color: rgb(1, 1, 0) });
+
+        // Save the modified PDF to a new variable.
+        const modifiedPdfBytes = await pdfDoc.save();
+
+        // Create a link to the PDF blob data.
+        const blob = new Blob([modifiedPdfBytes], { type: "application/pdf" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `${username}_GrandAdventure_Stats_Report.pdf`; // Name of the Downloaded PDF
+
+        // Click the link that we created and then detach it.
+        link.click();
+        URL.revokeObjectURL(url);
     }
 
     // Call a toast for setting a checkpoint.
@@ -310,19 +455,24 @@ export default function Solo({ supabase }) {
                 {/* Show Response Options (Only if Alive) */}
                 <div className={`h-[17.5%] bg-neutral-800 py-2 flex justify-center items-center gap-10 w-full`}>
                     {alive && optionOneText && optionTwoText && (
-                        <>
-                            <div aria-readonly={isPaused} onClick={() => selectChoice({ type: "response", responseText: optionOneText.option_1_text, id: optionOneText.option_1 })} className={`hover:opacity-60 ${ isPaused && `blur-sm pointer-events-none` } bg-neutral-600 cursor-pointer transition-all duration-200 ease-in-out rounded-lg border-neutral-600 border-2 h-fit p-2 text-white drop-shadow-lg w-4/12`}>
-                                <p>{optionOneText.option_1_text}</p>
-                            </div>
-                            {optionTwoText.option_2 !== null && ( // If Option 2 exists, show it.
-                                <div aria-readonly={isPaused} onClick={() => selectChoice({ type: "response", responseText: optionTwoText.option_2_text, id: optionTwoText.option_2 })} className={`hover:opacity-60 ${ isPaused && `blur-sm pointer-events-none` } bg-neutral-600 cursor-pointer transition-all duration-200 ease-in-out rounded-lg border-neutral-600 border-2 h-fit p-2 text-white drop-shadow-lg w-4/12`}>
-                                    <p>{optionTwoText.option_2_text}</p>
-                                </div>
-                            )}
-                            
-                        </>
+                        (() => {
+                            const key1 = optionNumber === 0 ? ["option_1_text", "option_1"] : ["option_2_text", "option_2"];
+                            const key2 = optionNumber === 0 ? ["option_2_text", "option_2"] : ["option_1_text", "option_1"];
+
+                            return (
+                                <React.Fragment>
+                                    <div aria-readonly={isPaused} onClick={() => selectChoice({ type: "response", responseText: optionOneText[key1[0]], id: optionOneText[key1[1]] })} className={`hover:opacity-60 ${ isPaused && `blur-sm pointer-events-none` } bg-neutral-600 cursor-pointer transition-all duration-200 ease-in-out rounded-lg border-neutral-600 border-2 h-fit p-2 text-white drop-shadow-lg w-4/12`}>
+                                        <p>{optionOneText[key1[0]]}</p>
+                                    </div>
+                                    {optionTwoText[key2[1]] !== null && ( // If Option 2 exists, show it.
+                                        <div aria-readonly={isPaused} onClick={() => selectChoice({ type: "response", responseText: optionTwoText[key2[0]], id: optionTwoText[key2[1]] })} className={`hover:opacity-60 ${ isPaused && `blur-sm pointer-events-none` } bg-neutral-600 cursor-pointer transition-all duration-200 ease-in-out rounded-lg border-neutral-600 border-2 h-fit p-2 text-white drop-shadow-lg w-4/12`}>
+                                            <p>{optionTwoText[key2[0]]}</p>
+                                        </div>
+                                    )}
+                                </React.Fragment>
+                            )
+                        })()
                     )}
-                    
                 </div>
             </div>
 
@@ -343,7 +493,11 @@ export default function Solo({ supabase }) {
 
                         {/* Congratulations Modal */}
                         <div className={`w-screen h-screen z-100 fixed top-0 left-91 flex justify-center items-center`}>
-                            <motion.div initial={{ y: 0, opacity: 0 }} animate={{ y: 0, opacity: 0.95 }} transition={{ ease: "linear", duration: 0.5 }} className={`z-20 p-5 drop-shadow-2xl rounded-lg bg-base-300 flex flex-col justify-center`}>
+                            <motion.div initial={{ y: 0, opacity: 0 }} animate={{ y: 0, opacity: 0.95 }} transition={{ ease: "linear", duration: 0.5 }} className={`z-20 p-5 relative drop-shadow-2xl rounded-lg bg-base-300 flex flex-col justify-center`}>
+                                {/* Action Row to Share and Download Results as Icons with Tooltips */}
+                                <div className={`flex gap-3.5 items-center absolute -top-14 left-0`}>
+                                    <button onClick={loadTemplate} className={`btn btn-square btn-neutral tooltip tooltip-top flex items-center justify-center`} data-tip={`Download Results`}><IoDownloadOutline size={20} color="white" /></button>
+                                </div>
                                 <motion.p className={`mb-7 font-retro z-20 text-4xl font-extrabold px-4 py-2.5 pt-4 rounded-lg text-success`}>Congratulations!</motion.p>
                                 <div className={`flex gap-2.5 mx-auto items-start w-fit h-20 mb-5`}>
                                     <div onClick={() => colorRef.current.click()} className={`p-[7px] border hover:bg-base-100 border-neutral-600 btn btn-square flex relative`}>
