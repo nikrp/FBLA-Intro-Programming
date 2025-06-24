@@ -27,19 +27,23 @@ import fontkit from '@pdf-lib/fontkit'
  * @see data - Array of objects that contains the storyline images.
  */
 export default function Solo({ supabase }) {
-    // State Variables
+    // Story & Choices
     const [storyline, setStoryline] = useState([]);
     const [optionOneText, setOptionOneText] = useState(undefined); // Option 1
     const [optionTwoText, setOptionTwoText] = useState(undefined); // Option 2
     const [optionNumber, setOptionNumber] = useState(0);
+    const [optionsSelected, setOptionsSelected] = useState(0);
     const [story, setStory] = useState([]);
+
+    // Player State
     const [alive, setAlive] = useState(true);
     const [success, setSuccess] = useState(false);
     const [isActive, setIsActive] = useState(false);
     const [isPaused, setIsPaused] = useState(true);
+
+    // Statistics
     const [time, setTime] = useState(0);
     const [deaths, setDeaths] = useState(0);
-    const [optionsSelected, setOptionsSelected] = useState(0);
     const [rank, setRank] = useState(0);
 
     // Refrences
@@ -50,10 +54,11 @@ export default function Solo({ supabase }) {
     const respawnTimer = 5000;
     const respawnTimerRef = useRef(respawnTimer);
 
-    const navigate = useNavigate(); // Move between pages
-    const location = useLocation(); // Contains Username passed From LandingPage.jsx
+    // React Router Navigation
+    const navigate = useNavigate(); // Navigate
+    const location = useLocation(); // Object containing username from LandingPage.jsx
 
-    // Player Prefrences
+    // Player Preferences
     const [colorChoice, setColorChoice] = useState("rgb(94.38%, 97.41%, 100%)");
     const [username, setUsername] = useState(location.state.username);
     const [editUsername, setEditUsername] = useState(false);
@@ -211,11 +216,22 @@ export default function Solo({ supabase }) {
     function respawn() {
         setShowRespawnButton(false);
         
+
         if (checkpointSet) {
             handleCheckpointRespawn();
+
+            // Include the previous choice and checkpoint dialogue in the storyline
+            const previousChoice = storyline[storyline.length - 2];
+
+            if (previousChoice) {
+                setStoryline([previousChoice, lastCheckpoint]); // Add both the previous choice and checkpoint to the storyline
+            } else {
+                setStoryline([lastCheckpoint]); // If no previous choice exists, just add the checkpoint
+            }
+        } else {
+            setStoryline([lastCheckpoint]); // Default behavior if no checkpoint is set
         }
 
-        setStoryline([lastCheckpoint]);
         setOptionOneText(lastCheckpoint);
         setOptionTwoText(lastCheckpoint);
         setAlive(true);
