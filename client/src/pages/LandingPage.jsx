@@ -7,6 +7,7 @@ import howToPlayStep2 from './assets/other/howToPlayStep2.png';
 import appLogo from './assets/other/app-logo.png';
 import temple from './assets/other/temple.png';
 import Cookies from 'js-cookie';
+import { LoaderCircle } from 'lucide-react';
 
 export default function LandingPage({ supabase }) {
     const [username, setUsername] = useState("");
@@ -14,6 +15,7 @@ export default function LandingPage({ supabase }) {
     const [usernameErrorMessage, setUsernameErrorMessage] = useState("");
     const [times, setTimes] = useState([]);
     const [leaderboard, setLeaderboard] = useState([]);
+    const [soloMode, setSoloMode] = useState(true);
 
     const navigate = useNavigate();
     
@@ -30,7 +32,9 @@ export default function LandingPage({ supabase }) {
         } else {
             setUsernameError(false);
             setUsernameErrorMessage("");
-            navigate("/adventure", { replace: true, state: { username: username } });
+
+            // Switch to solo or battle based on user's choice.
+            navigate(soloMode ? `/adventure` : `/battle`, { replace: true, state: { username: username } });
         }
     }
 
@@ -53,14 +57,14 @@ export default function LandingPage({ supabase }) {
 
     return (
         <div theme={`light`} className={`w-screen h-screen bg-neutral-800 px-10 py-10 flex justify-center items-center`}>
-            <img className={`w-screen h-screen fixed top-0 left-0`} src={temple} about={`bg`} /> {/* BG Image */}
+            <img className={`w-screen h-screen fixed top-0 left-0 brightness-50`} src={temple} about={`bg`} /> {/* BG Image */}
 
             {/* First Look */}
             <div className={`grid grid-cols-12 gap-5 w-screen p-10`}>
                 {/* Gather Cookies to Show Best Statistics on the Local Device of the Player */}
                 <div className={`col-span-4 rounded-lg drop-shadow-sm flex flex-col gap-3`}>
                     <div className={`rounded-lg p-7 bg-base-300`}>
-                        <p className={`text-2xl font-semibold`}>Best Statistics</p>
+                        <p className={`text-2xl font-semibold`}>Best Solo Statistics</p>
                         <div className={`w-full h-0.5 my-2.5 bg-neutral-500`}></div>
                         {Cookies.get("username") ? (
                             <>
@@ -82,48 +86,104 @@ export default function LandingPage({ supabase }) {
                             <p className={`text-lg text-secondary`}>Play an adventure to see it come here!</p>
                         )}
                     </div>
+
+                    {/* Battle Statistics */}
+                    {/* <div className={`rounded-lg p-7 bg-base-300`}>
+                        <p className={`text-2xl font-semibold`}>Best Battle Statistics</p>
+                        <div className={`w-full h-0.5 my-2.5 bg-neutral-500`}></div>
+                        {Cookies.get("username") ? (
+                            <>
+                                <p style={{ color: Cookies.get('color') }} className={`w-full text-3xl font-semibold mb-5 text-center`}>{Cookies.get('username')}</p>
+                                <p className={`flex items-center justify-between mb-3`}>
+                                    <p className={`text-xl font-normal`}>Time</p>
+                                    <p className={`text-xl font-medium text-accent`}><Timer time={parseInt(Cookies.get('seconds'))} /></p>
+                                </p>
+                                <p className={`flex items-center justify-between mb-3`}>
+                                    <p className={`text-xl font-normal`}>Deaths</p>
+                                    <p className={`text-xl font-medium text-warning`}>{Cookies.get('deaths')}</p>
+                                </p>
+                                <p className={`flex items-center justify-between`}>
+                                    <p className={`text-xl font-normal`}>Options Selected</p>
+                                    <p className={`text-xl font-medium text-error`}>{Cookies.get('options')}</p>
+                                </p>
+                            </>
+                        ) : (
+                            <p className={`text-lg text-secondary`}>Play an adventure to see it come here!</p>
+                        )}
+                    </div> */}
                 </div>
 
                 {/* Middle Section, Begin & How to Play */}
                 <div className={`col-span-4 rounded-lg drop-shadow-sm flex flex-col gap-3`}>
-                    <img src={appLogo} className={`w-4/6 mx-auto h-auto drop-shadow-2xl`} alt='Logo' />
+                    <img src={appLogo} className={`w-3/6 mx-auto h-auto drop-shadow-2xl`} alt='Logo' />
+                    {/* Solo & Battle Mode Buttons */}
+                    {/* <div className={`flex items-center gap-5 relative`}>
+                            <div onClick={() => setSoloMode(!soloMode)} className={`transition-all flex justify-center text-2xl items-center duration-200 ease-in-out w-1/2 h-20 rounded-xl border-2 ${soloMode ? `border-green-400 bg-gray-800` : `border-gray-700 bg-gray-700 cursor-pointer hover:bg-gray-800 hover:border-gray-800`}`}>
+                                Solo Mode
+                            </div>
+                            <div onClick={() => setSoloMode(!soloMode)} className={`transition-all flex justify-center text-2xl items-center duration-200 ease-in-out w-1/2 h-20 rounded-xl border-2 ${!soloMode ? `border-green-400 bg-gray-800` : `border-gray-700 bg-gray-700 cursor-pointer hover:bg-gray-800 hover:border-gray-800`}`}>
+                                Battle Mode
+                            </div>
+                    </div> */}
                     <input value={username} onChange={(e) => setUsername(e.target.value)} className={`w-full rounded-lg px-4 text-2xl py-2 focus:outline-none focus:ring-2 placeholder:text-gray-400 text-black focus:ring-offset-2 focus:ring-offset-transparent focus:ring-neutral-200 bg-white`} placeholder={`Username`} type={`text`} />
                     {usernameError && <p className={`text-red-500 text-xl bg-white py-1.5 px-2.5 rounded-lg drop-shadow-sm`}>{usernameErrorMessage}</p>}
                     <button onClick={handlePlayButton} className={`text-3xl rounded-lg bg-emerald-400 w-full px-4 py-2 cursor-pointer hover:bg-emerald-300 transition-all duraiton-200 ease-in-out`}>Play</button>
-                    <button onClick={() => document.getElementById('how_to_play_modal').showModal()} className={`animate-bounce w-fit mt-2 px-3 py-3 btn btn-accent btn-lg btn-square cursor-pointer transition-all duration-200 ease-in-out flex items-center gap-1.5`}>
-                        <IoHelpOutline size={20} />
-                        <p>How to Play</p>
-                    </button>
+                    <div className={`w-full flex justify-between`}>
+                        <button onClick={() => document.getElementById('how_to_play_solo_modal').showModal()} className={`w-fit px-3 py-3 btn btn-accent btn-lg btn-square animate-bounce cursor-pointer transition-all duration-200 ease-in-out flex items-center gap-1.5`}>
+                            <IoHelpOutline size={20} />
+                            <p>How to Play</p>
+                        </button>
+                        {/* How to Battle Button */}
+                        {/* <button onClick={() => document.getElementById('how_to_play_battle_modal').showModal()} className={`w-fit px-3 py-3 btn btn-error btn-lg btn-square cursor-pointer transition-all duration-200 ease-in-out flex items-center gap-1.5`}>
+                            <IoHelpOutline size={20} />
+                            <p>How to Battle</p>
+                        </button> */}
+                    </div>
                 </div>
 
                 {/* End Section, Leaderboard */}
-                <div className='col-span-4 rounded-lg bg-base-300 drop-shadow-sm p-5'>
+                <div className='col-span-4 rounded-lg bg-base-300 drop-shadow-sm p-5 h-fit'>
                     <p className={`text-2xl font-semibold mb-5`}>Global Leaderboard</p>
 
                     <div className={`flex flex-col gap-4`}>
-                        {leaderboard.map((value, index) => {
+                        {leaderboard.length > 0 ? leaderboard.map((value, index) => {
                             return (
                                 <div key={index} className={`flex items-center justify-between`}>
                                     <p style={{ color: value.color }} className={`text-xl font-semibold line-clamp-1`}>{index + 1}. {value.username}</p>
                                     <p className={`text-accent text-xl font-bold`}><Timer time={value.seconds} /></p>
                                 </div>
                             );
-                        })}
+                        }) : <div className={`flex items-center justify-center`}><LoaderCircle className={`animate-spin`} /></div>}
                     </div>
                 </div>
             </div>
             
             {/* Modal for How to Play */}
-            <dialog id={`how_to_play_modal`} className={`modal`}>
+            <dialog id={`how_to_play_solo_modal`} className={`modal`}>
                 <div className={`modal-box w-6/12 max-w-5xl`}>
                     <form method="dialog">
                         <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                     </form>
-                    <h3 className="font-bold text-lg mb-3">Hello, welcome to The Grand Adventure, here's how to play!</h3>
+                    <h3 className="font-bold text-lg mb-3">Hello, welcome to The Grand Adventure, here's how to play <span className={`text-accent`}>Solo Mode</span>!</h3>
                     <p className={`text-xl font-semibold`}>1. Read the Dialouge on the Left Side of the Screen</p>
                     <img src={howToPlayStep1} alt='step-1' className={`my-3 w-96 h-auto`} />
                     <p className={`text-xl font-semibold`}>2. Select What Option you Think has the Best Outcome</p>
                     <img src={howToPlayStep2} alt='step-2' className={`my-3 w-96 h-auto`} />
+                    <p className={`text-xl font-semibold`}>3. Try to Reach the End in the Shortest Possible Amount of Time!</p>
+                    <h3 className="font-bold text-lg mt-3">Good Luck Adventurer!</h3>
+                </div>
+            </dialog>
+             {/* TODO - Change the steps & their images. */}
+            <dialog id={`how_to_play_battle_modal`} className={`modal`}>
+                <div className={`modal-box w-6/12 max-w-5xl`}>
+                    <form method="dialog">
+                        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                    </form>
+                    <h3 className="font-bold text-lg mb-3">Hello, welcome to The Grand Adventure, here's how to play <span className={`text-error`}>Battle Mode</span>!</h3>
+                    <p className={`text-xl font-semibold`}>1. Read the Dialouge on the Left Side of the Screen</p>
+                    <img src={howToPlayStep1} alt='step-1' className={`my-3 w-96 h-auto`} /> {/* TODO - Change this image. */}
+                    <p className={`text-xl font-semibold`}>2. Select What Option you Think has the Best Outcome</p>
+                    <img src={howToPlayStep2} alt='step-2' className={`my-3 w-96 h-auto`} /> {/* TODO - Change this image. */}
                     <p className={`text-xl font-semibold`}>3. Try to Reach the End in the Shortest Possible Amount of Time!</p>
                     <h3 className="font-bold text-lg mt-3">Good Luck Adventurer!</h3>
                 </div>

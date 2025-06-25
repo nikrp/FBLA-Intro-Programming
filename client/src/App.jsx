@@ -1,8 +1,9 @@
 // Import necessary modules and components from React Router and Supabase
-import { Route, Routes } from "react-router-dom" // Used for defining application routes
-import LandingPage from "./pages/LandingPage" // Landing page component
-import Solo from "./pages/Solo" // Solo adventure page component
-import { createClient } from "@supabase/supabase-js" // Supabase client for database interaction
+import { Route, Routes } from "react-router-dom"
+import LandingPage from "./pages/LandingPage"
+import Solo from "./pages/Solo"
+import Battle from "./pages/Battle"
+import { createClient } from "@supabase/supabase-js"
 
 // Initialize the Supabase client using environment variables for configuration
 const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON)
@@ -23,6 +24,7 @@ function App() {
         
         {/* Define the route for the solo adventure page */}
         <Route path="/adventure" element={<Solo supabase={supabase} />} />
+        <Route path="/battle" element={<Battle supabase={supabase} />} />
       </Routes>
     </div>
   )
