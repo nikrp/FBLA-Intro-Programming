@@ -34,7 +34,7 @@ export default function Solo({ supabase }) {
 
     // Respawn Countdown
     const [showRespawnButton, setShowRespawnButton] = useState(false);
-    const respawnTimer = 5000;
+    const respawnTimer = 3000;
     const respawnTimerRef = useRef(respawnTimer);
 
     // React Router Navigation
@@ -159,8 +159,8 @@ export default function Solo({ supabase }) {
                         clearInterval(intervalId);
                     }
 
-                    respawnTimerRef.current -= 10;
-                }, 10);
+                    respawnTimerRef.current -= 20;
+                }, 5);
             }
         } else {
             // Update the Checkpoint if halfwayIndex is met
@@ -200,7 +200,7 @@ export default function Solo({ supabase }) {
         setOptionTwoText(lastCheckpoint);
         setAlive(true);
         setDeaths((deaths) => deaths + 1);
-        respawnTimerRef.current = 5000;
+        respawnTimerRef.current = 3000;
     }
 
     // Add the Player's Time to the Leaderboard including their Deaths, Username, and Color Choice
