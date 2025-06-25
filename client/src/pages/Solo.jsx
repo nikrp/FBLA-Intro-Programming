@@ -204,8 +204,9 @@ export default function Solo({ supabase }) {
         }
         
         // Update the possible options.
-        setOptionNumber(Math.floor(Math.random() * 2));
-        console.log(Math.floor(Math.random() * 2));
+        // Randomly choose which option appears first (0 or 1) to add variety
+        // setOptionNumber(Math.floor(Math.random() * 2)); // Temprarily Disabled for Demo
+        setOptionNumber(0);
         setOptionOneText(next);
         setOptionTwoText(next);
     }
@@ -348,7 +349,13 @@ export default function Solo({ supabase }) {
         doc.save(`${username}_GrandAdventure_Stats_Report.pdf`);
     }
 
-    // Load the template pdf from assets and add the users stats to it.
+    /**
+     * Load a template PDF for a congratulations message,
+     * enter the players statistics for their run into the
+     * PDF with statistics. Then create an invisible link
+     * for the PDF blob data and press that link in the
+     * client so that the PDF actually downloads.
+     */
     const loadTemplate = async () => {
         
         // Load and prepare the PDF template and custom font for modification,
@@ -407,12 +414,20 @@ export default function Solo({ supabase }) {
         URL.revokeObjectURL(url);
     }
 
-    // Call a toast for setting a checkpoint.
+    /**
+     * Call a toast which pops up in the top right corner for
+     * when the player reaches a checkpoint to let them know
+     * it has been set.
+     */
     function handleCheckpointSet() {
         toast("Checkpoint Set!");
     }
 
-    // Call a toast for respawing at a checkpoint.
+    /**
+     * When the player respawns, spawn this toast in the
+     * top right corner letting them know that they
+     * respawned at a checkpoint and not the start.
+     */
     function handleCheckpointRespawn() {
         toast("Respawned at Checkpoint!");
     }
